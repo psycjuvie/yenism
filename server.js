@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from "express"
 import fs from "fs"
 import path from "path"
@@ -14,8 +15,12 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"))
 })
 
-const apikey = "x"
+const apikey = process.env.GEMINI_API_KEY
 const model = "gemini-3.1-pro-preview"
+
+if (!apikey) {
+    throw new Error("missing gemini api key in .env")
+}
 
 const ai = new GoogleGenAI({ apiKey: apikey })
 const lyrics = fs.readFileSync(path.join(__dirname, "lyrics.txt"), "utf8")
@@ -84,5 +89,4 @@ app.post("/other", async (req, res) => {
 
 app.listen(3000, () => {
     console.log("yenism running at http://localhost:3000")
-
 })
