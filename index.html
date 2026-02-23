@@ -12,7 +12,7 @@
     <div class="max-w-4xl mx-auto px-4 py-10">
         <div class="flex items-center justify-between mb-6">
             <div class="text-xl tracking-wide">yenism</div>
-            <div class="text-xs opacity-70">hooks + tools</div>
+            <div class="text-xs opacity-70">lyrics + hooks</div>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
@@ -20,9 +20,12 @@
                 <div class="text-xs opacity-70 mb-2">extra info</div>
                 <textarea id="extra"
                     class="w-full rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40 min-h-[110px]"
-                    placeholder="optional direction, mood, idea, or constraint"></textarea>
+                    placeholder="x"></textarea>
 
-                <div class="mt-3">
+                <div class="mt-3 flex gap-2">
+                    <button id="generate_lyrics"
+                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">generate
+                        lyrics</button>
                     <button id="random_hook"
                         class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">random
                         hook</button>
@@ -35,7 +38,7 @@
                 <div class="text-xs opacity-70 mb-2">other</div>
                 <textarea id="other_q"
                     class="w-full rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40 min-h-[180px]"
-                    placeholder="ask anything with lyrics attached"></textarea>
+                    placeholder="x"></textarea>
 
                 <div class="mt-2 flex gap-2">
                     <button id="other_go"
@@ -62,6 +65,19 @@
 
         function set_output(t) {
             output.textContent = t || ""
+        }
+
+        document.getElementById("generate_lyrics").onclick = async () => {
+            set_status("generating lyrics...")
+            set_output("")
+            const res = await fetch("/lyrics", {
+                method: "post",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ extra: extra.value || "" })
+            })
+            const data = await res.json()
+            set_output(data.text || "")
+            set_status("done.")
         }
 
         document.getElementById("random_hook").onclick = async () => {
