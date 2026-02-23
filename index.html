@@ -12,38 +12,23 @@
     <div class="max-w-4xl mx-auto px-4 py-10">
         <div class="flex items-center justify-between mb-6">
             <div class="text-xl tracking-wide">yenism</div>
-            <div class="text-xs opacity-70">titles, lyrics, and tools</div>
+            <div class="text-xs opacity-70">hooks + tools</div>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
             <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
-                <div class="text-xs opacity-70 mb-2">song title</div>
-                <input id="title"
-                    class="w-full rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40"
-                    placeholder="type a title or generate one">
-
-                <div class="mt-3 flex flex-wrap items-center gap-2">
-                    <select id="title_style"
-                        class="rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40">
-                        <option value="auto">auto</option>
-                        <option value="word">word</option>
-                        <option value="phrase">phrase</option>
-                    </select>
-                    <button id="random_title"
-                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">random song
-                        title</button>
-                </div>
-
-                <div class="mt-4 text-xs opacity-70 mb-2">extra info</div>
+                <div class="text-xs opacity-70 mb-2">extra info</div>
                 <textarea id="extra"
-                    class="w-full rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40 min-h-[80px]"
+                    class="w-full rounded-xl bg-black/60 border border-white/20 px-3 py-2 text-sm outline-none focus:border-white/40 min-h-[110px]"
                     placeholder="optional direction, mood, idea, or constraint"></textarea>
 
                 <div class="mt-3">
-                    <button id="generate_lyrics"
-                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">generate
-                        lyrics</button>
+                    <button id="random_hook"
+                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">random
+                        hook</button>
                 </div>
+
+                <div id="status" class="mt-4 text-xs opacity-70 min-h-[16px]"></div>
             </div>
 
             <div class="rounded-2xl border border-white/20 bg-white/5 p-4">
@@ -56,24 +41,20 @@
                     <button id="other_go"
                         class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">run</button>
                     <button id="clear"
-                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">clear
-                        output</button>
+                        class="rounded-xl border border-white/20 px-3 py-2 text-sm hover:border-white/40">clear</button>
                 </div>
 
-                <div id="status" class="mt-4 text-xs opacity-70 min-h-[16px]"></div>
                 <pre id="output"
-                    class="mt-3 rounded-xl border border-white/20 bg-black/40 p-3 whitespace-pre-wrap leading-relaxed text-sm min-h-[260px]"></pre>
+                    class="mt-4 rounded-xl border border-white/20 bg-black/40 p-3 whitespace-pre-wrap leading-relaxed text-sm min-h-[260px]"></pre>
             </div>
         </div>
     </div>
 
     <script>
-        const title = document.getElementById("title")
         const extra = document.getElementById("extra")
+        const other_q = document.getElementById("other_q")
         const output = document.getElementById("output")
         const status = document.getElementById("status")
-        const title_style = document.getElementById("title_style")
-        const other_q = document.getElementById("other_q")
 
         function set_status(t) {
             status.textContent = (t || "").toLowerCase()
@@ -83,29 +64,13 @@
             output.textContent = t || ""
         }
 
-        document.getElementById("random_title").onclick = async () => {
-            set_status("generating title...")
+        document.getElementById("random_hook").onclick = async () => {
+            set_status("generating hook...")
             set_output("")
-            const res = await fetch("/title", {
+            const res = await fetch("/hook", {
                 method: "post",
                 headers: { "content-type": "application/json" },
-                body: JSON.stringify({ style: title_style.value })
-            })
-            const data = await res.json()
-            title.value = (data.title || "").toLowerCase()
-            set_status("title set.")
-        }
-
-        document.getElementById("generate_lyrics").onclick = async () => {
-            set_status("generating lyrics...")
-            set_output("")
-            const res = await fetch("/generate", {
-                method: "post",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({
-                    title: title.value || "",
-                    extra: extra.value || ""
-                })
+                body: JSON.stringify({ extra: extra.value || "" })
             })
             const data = await res.json()
             set_output(data.text || "")
