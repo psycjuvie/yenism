@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"))
 })
 
-const apikey = "AIzaSyDvwzFvG8ksL2XfrBeEwVtWFHq-303B8LY"
+const apikey = "x"
 const model = "gemini-3.1-pro-preview"
 
 const ai = new GoogleGenAI({ apiKey: apikey })
@@ -84,4 +84,5 @@ app.post("/other", async (req, res) => {
 
 app.listen(3000, () => {
     console.log("yenism running at http://localhost:3000")
+
 })
